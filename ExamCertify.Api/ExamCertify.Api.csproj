@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.3.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.1.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExamCertify.Application\ExamCertify.Application.csproj" />
+    <ProjectReference Include="..\ExamCertify.Domain\ExamCertify.Domain.csproj" />
+    <ProjectReference Include="..\ExamCertify.Infrastructure\ExamCertify.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
