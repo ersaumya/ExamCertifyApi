@@ -15,11 +15,13 @@ namespace ExamCertify.Api.Controllers
         private readonly ICourseService _courseService;
 
         public readonly IValidator<CreateCourseDto> _validator;
-         
-        public CoursesController(ICourseService courseService, IValidator<CreateCourseDto> validator)
+        private readonly IValidator<UpdateCourseDto> _updateValidator;
+
+        public CoursesController(ICourseService courseService, IValidator<CreateCourseDto> validator,IValidator<UpdateCourseDto> updateValidator)
         {
             this._courseService = courseService;
             this._validator = validator;
+            this._updateValidator = updateValidator;
         }
 
         /// <summary>
@@ -96,7 +98,13 @@ namespace ExamCertify.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateCourse(int id, [FromBody] UpdateCourseDto updateCourseDto)
-        { 
+        {
+            var validationResult = await _updateValidator.ValidateAsync(updateCourseDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
 
             await _courseService.UpdateCourseAsync(id, updateCourseDto);
             return NoContent();

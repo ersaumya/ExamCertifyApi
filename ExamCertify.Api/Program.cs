@@ -42,6 +42,7 @@ namespace ExamCertify.Api
 
             // Add FluentValidation
             builder.Services.AddValidatorsFromAssemblyContaining<CreateCourseValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<UpdateCourseValidator>();
 
             // In production, modify this with the actual domains you want to allow
             builder.Services.AddCors(options =>
