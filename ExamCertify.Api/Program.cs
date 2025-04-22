@@ -1,9 +1,12 @@
 
+using ExamCertify.Api.Filters;
 using ExamCertify.Application;
+using ExamCertify.Application.DTOValidations;
 using ExamCertify.Application.Interfaces.Courses;
 using ExamCertify.Application.Services;
 using ExamCertify.Infrastructure;
 using ExamCertify.Infrastructure.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -22,13 +25,23 @@ namespace ExamCertify.Api
             });
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilter>(); // Add your custom validation filter
+                
+            }).ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true; // Disable automatic validation
+            });
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             builder.Services.AddScoped<ICourseRepository, CoursesRepository>();
             builder.Services.AddScoped<ICourseService, CourseService>();
+
+            // Add FluentValidation
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateCourseValidator>();
 
             // In production, modify this with the actual domains you want to allow
             builder.Services.AddCors(options =>

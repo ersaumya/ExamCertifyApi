@@ -1,5 +1,6 @@
 ﻿using ExamCertify.Application.DTOs;
 using ExamCertify.Application.Interfaces.Courses;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,12 @@ namespace ExamCertify.Api.Controllers
     {
         private readonly ICourseService _courseService;
 
-        public CoursesController(ICourseService courseService)
+        public readonly IValidator<CreateCourseDto> _validator;
+         
+        public CoursesController(ICourseService courseService, IValidator<CreateCourseDto> validator)
         {
             this._courseService = courseService;
+            this._validator = validator;
         }
 
         /// <summary>
@@ -67,7 +71,13 @@ namespace ExamCertify.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
 
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto createCourseDto)
-        { 
+        {
+            var validationResult = await _validator.ValidateAsync(createCourseDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
             await _courseService.AddCourseAsync(createCourseDto);
             return CreatedAtAction(nameof(GetCourse), new { id = createCourseDto.Title }, createCourseDto);
         }
